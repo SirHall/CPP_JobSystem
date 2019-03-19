@@ -1,0 +1,6 @@
+[submodule "dep/boost_thread"]
+	path = dep/boost_thread
+	url = git@github.com:boostorg/thread.git
+[submodule "dep/boost_atomic"]
+	path = dep/boost_atomic
+	url = https://github.com/boostorg/atomic.git
