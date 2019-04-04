@@ -2,26 +2,29 @@ import fnmatch
 import os
 
 progName = "out"
+srcDir = "src"
+includeDir = ["include"]
+buildDir = "build"
+binDir = "bin"
 
 def RecursiveGlob(pathname, pattern):
     matches = []
     for root, dirnames, filenames in os.walk(pathname):
         for filename in fnmatch.filter(filenames, pattern):
-            matches.append(File(os.path.join(root, filename)))
+            matchingFile = Glob(os.path.join(root, filename))
+            relPath = os.path.join(root, filename)
+            #matches.extend((matchingFile, relPath))
+            matches.append(relPath)
     return matches
 
-#VariantDir('build', 'include')
+env = Environment(CPPPATH = includeDir)
 
-srcs = RecursiveGlob("src", "*.cpp")
+env.VariantDir(variant_dir = buildDir, src_dir = srcDir, duplicate = 0)
 
-#var_scrs = ["#bin/" + f for f in srcs]
+srcs = RecursiveGlob(srcDir, "*.cpp")
 
-env = Environment(CPPPATH = "include")
+print([buildDir + "/" + f[4:] + "\n" for f in srcs])
 
-for f in srcs:
-        fName = os.path.splitext(f.name)
-        env.Object("build/" + fName[0] + ".o", f);
+var_srcs = [buildDir + "/" + f[4:] for f in srcs]
 
-objs = Glob("build/*.o")
-
-env.Program(progName, objs)
+env.Program(binDir + "/"  + progName, var_srcs)
