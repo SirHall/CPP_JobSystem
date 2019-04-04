@@ -6,6 +6,7 @@ srcDir = "src"
 includeDir = ["include"]
 buildDir = "build"
 binDir = "bin"
+cppFlags = "-O3"
 
 def RecursiveGlob(pathname, pattern):
     matches = []
@@ -17,13 +18,13 @@ def RecursiveGlob(pathname, pattern):
             matches.append(relPath)
     return matches
 
-env = Environment(CPPPATH = includeDir)
+env = Environment(CPPPATH = includeDir, CXXFLAGS = cppFlags)
 
 env.VariantDir(variant_dir = buildDir, src_dir = srcDir, duplicate = 0)
 
 srcs = RecursiveGlob(srcDir, "*.cpp")
 
-print([buildDir + "/" + f[4:] + "\n" for f in srcs])
+#print([buildDir + "/" + f[4:] + "\n" for f in srcs])
 
 var_srcs = [buildDir + "/" + f[4:] for f in srcs]
 
