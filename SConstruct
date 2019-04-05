@@ -6,7 +6,22 @@ srcDir = "src"
 includeDir = ["include"]
 buildDir = "build"
 binDir = "bin"
-cppFlags = "-O3"
+
+#bt - build type. Use example: $ scons -bd=debug
+cppFlags = {\
+    "standard" : "-std=c++17",\
+    "debug" : "-std=c++17 -g",\
+    "release" : "-std=c++17 -O3"\
+}
+
+usedCPPFlags = ""
+
+if "bt" in ARGUMENTS:
+    usedCPPFlags = cppFlags[ARGUMENTS["bt"]]
+else:
+    usedCPPFlags = cppFlags["standard"]
+
+#print("\t\t" + usedCPPFlags)
 
 def RecursiveGlob(pathname, pattern):
     matches = []
@@ -18,7 +33,7 @@ def RecursiveGlob(pathname, pattern):
             matches.append(relPath)
     return matches
 
-env = Environment(CPPPATH = includeDir, CXXFLAGS = cppFlags)
+env = Environment(CPPPATH = includeDir, CXXFLAGS = usedCPPFlags)
 
 env.VariantDir(variant_dir = buildDir, src_dir = srcDir, duplicate = 0)
 
