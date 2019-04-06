@@ -1,0 +1,21 @@
+[submodule "dep/CTPL"]
+	path = dep/CTPL
+	url = https://github.com/vit-vit/CTPL.git
+[submodule "dep/boost_bind"]
+	path = dep/boost_bind
+	url = git@github.com:boostorg/bind.git
+[submodule "dep/boost_thread"]
+	path = dep/boost_thread
+	url = git@github.com:boostorg/thread.git
+[submodule "dep/boost_asio"]
+	path = dep/boost_asio
+	url = git@github.com:boostorg/asio.git
+[submodule "dep/boost_chrono"]
+	path = dep/boost_chrono
+	url = git@github.com:boostorg/chrono.git
+[submodule "dep/boost_date_time"]
+	path = dep/boost_date_time
+	url = git@github.com:boostorg/date_time.git
+[submodule "dep/boost_move"]
+	path = dep/boost_move
+	url = git@github.com:boostorg/move.git
