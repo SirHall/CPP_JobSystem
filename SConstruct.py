@@ -13,45 +13,48 @@ def RecursiveGlob(pathname, pattern):
 
 #Compile boost chrono library
 chronoEnv = Environment( \
-    CPPPath = [
+    CPPPATH = [
         "dep/boost_chrono/include" \
         ], \
     CXXFLAGS = "-std=c++17")
 chronoSrcs = RecursiveGlob("dep/boost_chrono/src/", "*.cpp");
-chronoEnv.SharedLibrary("dep/boost_chrono/bin/boost_chrono", chronoSrcs)
+chronoEnv.StaticLibrary("dep/boost_chrono/bin/boost_chrono", chronoSrcs)
 
 #Compile boost system library
 systemEnv = Environment( \
-    CPPPath = [
+    CPPPATH = [
         "dep/boost_system/include" \
         ], \
-    CXXFLAGS = "-std=c++17")
+    CXXFLAGS = "-std=c++17 -lpthread")
 systemSrcs = RecursiveGlob("dep/boost_system/src/", "*.cpp");
-systemEnv.SharedLibrary("dep/boost_system/bin/boost_system", systemSrcs)
+systemEnv.StaticLibrary("dep/boost_system/bin/boost_system", systemSrcs)
 
 #Compile boost date_time library
 date_timeEnv = Environment( \
-    CPPPath = [
+    CPPPATH = [
         "dep/boost_date_time/include" \
         ], \
     CXXFLAGS = "-std=c++17")
 date_timeSrcs = RecursiveGlob("dep/boost_date_time/src/", "*.cpp");
-date_timeEnv.SharedLibrary("dep/boost_date_time/bin/boost_date_time", \
+date_timeEnv.StaticLibrary("dep/boost_date_time/bin/boost_date_time", \
     date_timeSrcs)
 
 
 #Compile boost thread library
 threadEnv = Environment( \
-    CPPPath = [
+    CPPPATH = [
         "dep/boost_thread/include", \
-        "dep/boost_system/include", \
-        "dep/boost_date_time/include", \
-        "dep/boost_chrono/include", \
-        "dep/boost_move/include"
+        # "dep/boost_system/include", \
+        # "dep/boost_date_time/include", \
+        # "dep/boost_chrono/include", \
+        "dep/boost_move/include", \
+        "dep/boost_atomic/include", \
+        "dep/boost_win_api/include"
     ], \
     CXXFLAGS = "-std=c++14 -lpthread " + \
-        "-L./dep/boost_chrono/bin -L./dep/boost_system/bin -L./dep/boost_date_time" + \
-        "-lboost_chrono -lboost_system -lboost_date_time", \
+        "-L./dep/boost_chrono/bin -L./dep/boost_system/bin " +\
+        "-L./dep/boost_date_time -L./dep/boost_thread/src " + \
+        "-lboost_chrono -lboost_system -lboost_date_time -lfuture -ltss_null", \
     LIBPATH = [ \
         "dep/boost_chrono/bin", \
         "dep/boost_system/bin", \
@@ -63,11 +66,12 @@ threadEnv = Environment( \
         "boost_date_time"
     ] \
 )
-threadSrcs = RecursiveGlob("dep/boost_thread/src/", "*.cpp");
-threadEnv.SharedLibrary("dep/boost_thread/bin/boost_thread", threadSrcs)
+#We want to skip the win32 dir
+threadSrcs = RecursiveGlob("dep/boost_thread/src/pthread", "*.cpp")
+threadEnv.StaticLibrary("dep/boost_thread/bin/boost_thread", threadSrcs)
 
 #Compile program
-progName = "out"
+progName = "bin/out"
 srcDir = "src"
 includeDir = [
     "include"#, \
@@ -76,17 +80,21 @@ includeDir = [
     # "dep/boost_asio/include"
 ]
 libDirs = [ \
-    # "#dep/boost_thread/bin/boost_thread.lib"
+    "#dep/boost_thread/bin/", \
+    "#dep/boost_system/bin/"
     # "boost_thread" \
+]
+libs =[ \
+    "boost_thread", "boost_system", "pthread"
 ]
 buildDir = "build"
 binDir = "bin"
 
 #bt - build type. Use example: $ scons -bd=debug
 cppFlags = {\
-    "standard" : "-std=c++17 -pthread -lpthread -lboost_thread",\
-    "debug" : "-std=c++17 -pthread -g",\
-    "release" : "-std=c++17 -pthread -O3"\
+    "standard" : "-std=c++17 -pthread -lpthread -L./dep/boost_thread/bin -lboost_thread",\
+    "debug" : "-std=c++17 -lpthread -g",\
+    "release" : "-std=c++17 -lpthread -O3"\
 }
 
 usedCPPFlags = ""
@@ -99,7 +107,7 @@ else:
 #print("\t\t" + usedCPPFlags)
 
 env = Environment(CPPPATH = includeDir, CXXFLAGS = usedCPPFlags, \
-    LIBPATH = libDirs)
+    LIBPATH = libDirs, LIBS = libs)
 
 env.VariantDir(variant_dir = buildDir, src_dir = srcDir, duplicate = 0)
 
@@ -109,4 +117,4 @@ srcs = RecursiveGlob(srcDir, "*.cpp")
 
 var_srcs = [buildDir + "/" + f[4:] for f in srcs]
 
-# env.Program(binDir + "/"  + progName, var_srcs)
+env.Program(binDir + "/"  + progName, var_srcs)

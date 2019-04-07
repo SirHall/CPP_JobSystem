@@ -19,3 +19,15 @@
 [submodule "dep/boost_move"]
 	path = dep/boost_move
 	url = git@github.com:boostorg/move.git
+[submodule "dep/boost_atomic"]
+	path = dep/boost_atomic
+	url = git@github.com:boostorg/atomic.git
+[submodule "dep/boost_system"]
+	path = dep/boost_system
+	url = git@github.com:boostorg/system.git
+[submodule "dep/boost_build"]
+	path = dep/boost_build
+	url = git@github.com:boostorg/build.git
+[submodule "dep/boost_win_api"]
+	path = dep/boost_win_api
+	url = git@github.com:boostorg/winapi.git
