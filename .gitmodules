@@ -1,6 +1,3 @@
-[submodule "dep/CTPL"]
-	path = dep/CTPL
-	url = https://github.com/vit-vit/CTPL.git
 [submodule "dep/boost_bind"]
 	path = dep/boost_bind
 	url = git@github.com:boostorg/bind.git
@@ -25,9 +22,3 @@
 [submodule "dep/boost_system"]
 	path = dep/boost_system
 	url = git@github.com:boostorg/system.git
-[submodule "dep/boost_build"]
-	path = dep/boost_build
-	url = git@github.com:boostorg/build.git
-[submodule "dep/boost_win_api"]
-	path = dep/boost_win_api
-	url = git@github.com:boostorg/winapi.git
